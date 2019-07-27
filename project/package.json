@@ -1,0 +1,64 @@
+{
+  "name": "@wounded-pixels/eda",
+  "description": "Exploratory Data Analysis. For the Web",
+  "homepage": "https://github.com/wounded-pixels/eda/blob/master/project/README.md",
+  "keywords": [
+    "typescript",
+    "eda"
+  ],
+  "version": "0.1.0",
+  "private": false,
+  "main": "dist/eda.js",
+  "module": "dist/eda.es.js",
+  "browser": "dist/eda.es.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/eda.d.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "11.11.3",
+    "@types/storybook__html": "^5.0.2",
+    "@wounded-pixels/svg-bindings": "^0.1.4"
+  },
+  "scripts": {
+    "test": "jest --watch ./src/lib",
+    "coverage": "jest --coverage --watch  ./src/lib",
+    "build": "rollup -c && tsc -p ./tsconfig-typings.json",
+    "dev": "watch 'npm run build' src",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "eslintConfig": {},
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@storybook/html": "^5.1.9",
+    "@types/jest": "^24.0.11",
+    "awesome-typescript-loader": "^5.2.1",
+    "babel-loader": "^8.0.6",
+    "husky": "^2.1.0",
+    "jest": "^24.8.0",
+    "onchange": "^5.2.0",
+    "prettier": "^1.17.0",
+    "pretty-quick": "^1.10.0",
+    "rollup": "^1.13.1",
+    "rollup-plugin-tsc": "^1.1.15",
+    "rollup-plugin-typescript": "^1.0.1",
+    "ts-jest": "^24.0.2",
+    "tslib": "^1.9.3",
+    "typescript": "3.3.3333",
+    "watch": "^1.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npx pretty-quick --staged && npm ci && jest --ci ./src/lib",
+      "pre-push": "jest --ci ./src/lib"
+    }
+  }
+}
