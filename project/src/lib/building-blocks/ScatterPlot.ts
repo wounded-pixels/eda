@@ -1,4 +1,9 @@
-import { Circles, KeyFunction, NumberFunction, StringProducer } from '@wounded-pixels/svg-bindings';
+import {
+  Circles,
+  KeyFunction,
+  NumberFunction,
+  StringProducer
+} from "@wounded-pixels/svg-bindings";
 
 export class ScatterPlot {
   private readonly parent: Element;
@@ -61,13 +66,14 @@ export class ScatterPlot {
 
   update(data: any[]) {
     if (this.circles === null) {
-      this.svg.setAttribute('viewBox', `${this.domainMinimum} ${this.rangeMinimum} ${this.domainMaximum - this.domainMinimum} ${this.rangeMaximum - this.rangeMinimum}`);
-      this.svg.setAttribute('transform',  `scale(1,-1)`);
+      this.svg.setAttribute(
+        "viewBox",
+        `${this.domainMinimum} ${this.rangeMinimum} ${this.domainMaximum -
+          this.domainMinimum} ${this.rangeMaximum - this.rangeMinimum}`
+      );
+      this.svg.setAttribute("transform", `scale(1,-1)`);
 
       this.circles = new Circles(this.svg, this.keyFunction);
-
-      const dataWidth = this.domainMaximum - this.domainMinimum;
-      const dataHeight = this.rangeMaximum - this.rangeMinimum;
 
       const xFunction = (d: any) => {
         return this.xFunction ? this.xFunction(d) : 0;
