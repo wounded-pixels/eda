@@ -1,12 +1,8 @@
-import {
-  Circles,
-  KeyFunction,
-  NumberFunction,
-  StringProducer
-} from "@wounded-pixels/svg-bindings";
+import { Circles, KeyFunction, NumberFunction, StringProducer } from '@wounded-pixels/svg-bindings';
 
 export class ScatterPlot {
-  private readonly parent: SVGGraphicsElement;
+  private readonly parent: Element;
+  private readonly svg: SVGElement;
   private circles: Circles | null = null;
   private keyFunction: KeyFunction = d => d.id;
   private domainMinimum: number = 0;
@@ -17,8 +13,12 @@ export class ScatterPlot {
   private yFunction?: NumberFunction | null;
   private fillProducer: StringProducer = "grey";
 
-  constructor(parent: SVGGraphicsElement) {
+  constructor(parent: Element) {
     this.parent = parent;
+    this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this.svg.setAttribute("width", "100%");
+    this.svg.setAttribute("height", "auto");
+    this.parent.appendChild(this.svg);
   }
 
   id(keyFunction: KeyFunction): ScatterPlot {
@@ -61,25 +61,20 @@ export class ScatterPlot {
 
   update(data: any[]) {
     if (this.circles === null) {
-      this.circles = new Circles(this.parent, this.keyFunction);
+      this.svg.setAttribute('viewBox', `${this.domainMinimum} ${this.rangeMinimum} ${this.domainMaximum - this.domainMinimum} ${this.rangeMaximum - this.rangeMinimum}`);
+      this.svg.setAttribute('transform',  `scale(1,-1)`);
 
-      const parent = this.parent as any;
-      const svgWidth = parent.width.baseVal.value;
-      const svgHeight = parent.height.baseVal.value;
+      this.circles = new Circles(this.svg, this.keyFunction);
 
       const dataWidth = this.domainMaximum - this.domainMinimum;
       const dataHeight = this.rangeMaximum - this.rangeMinimum;
 
       const xFunction = (d: any) => {
-        const positionX = this.xFunction ? this.xFunction(d) : 0;
-        return ((positionX - this.domainMinimum) * svgWidth) / dataWidth;
+        return this.xFunction ? this.xFunction(d) : 0;
       };
 
       const yFunction = (d: any) => {
-        const positionY = this.yFunction ? this.yFunction(d) : 0;
-        const fromBottom =
-          ((positionY - this.rangeMinimum) * svgHeight) / dataHeight;
-        return svgHeight - fromBottom;
+        return this.yFunction ? this.yFunction(d) : 0;
       };
 
       this.circles
