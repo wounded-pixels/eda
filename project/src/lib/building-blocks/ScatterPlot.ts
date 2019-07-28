@@ -1,4 +1,5 @@
 import {
+  createSvgElement,
   Circles,
   KeyFunction,
   NumberFunction,
@@ -20,10 +21,11 @@ export class ScatterPlot {
 
   constructor(parent: Element) {
     this.parent = parent;
-    this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this.svg.setAttribute("width", "100%");
-    this.svg.setAttribute("height", "auto");
-    this.parent.appendChild(this.svg);
+    this.svg = createSvgElement(
+      "svg",
+      { width: "100%", height: "auto" },
+      this.parent
+    );
   }
 
   id(keyFunction: KeyFunction): ScatterPlot {
