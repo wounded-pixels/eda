@@ -1,9 +1,9 @@
 module.exports = {
-  roots: ["<rootDir>/src"],
+  roots: ['<rootDir>/src'],
   transform: {
-    "^.+\\.ts$": "ts-jest"
+    '^.+\\.ts$': 'ts-jest',
   },
   coveragePathIgnorePatterns: [
-    "<rootDir>/src/lib/building-blocks/ScatterPlot.stories.ts"
-  ]
+    '<rootDir>/src/lib/building-blocks/ScatterPlot.stories.ts',
+  ],
 };
