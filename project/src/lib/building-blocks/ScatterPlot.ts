@@ -3,8 +3,8 @@ import {
   Circles,
   KeyFunction,
   NumberFunction,
-  StringProducer
-} from "@wounded-pixels/svg-bindings";
+  StringProducer,
+} from '@wounded-pixels/svg-bindings';
 
 export class ScatterPlot {
   private readonly parent: Element;
@@ -17,13 +17,13 @@ export class ScatterPlot {
   private rangeMaximum: number = 100;
   private xFunction?: NumberFunction | null;
   private yFunction?: NumberFunction | null;
-  private fillProducer: StringProducer = "grey";
+  private fillProducer: StringProducer = 'grey';
 
   constructor(parent: Element) {
     this.parent = parent;
     this.svg = createSvgElement(
-      "svg",
-      { width: "100%", height: "auto" },
+      'svg',
+      { width: '100%', height: 'auto' },
       this.parent
     );
   }
@@ -68,13 +68,13 @@ export class ScatterPlot {
 
   update(data: any[]) {
     if (this.circles === null) {
-      this.svg.innerHTML = "";
+      this.svg.innerHTML = '';
       this.svg.setAttribute(
-        "viewBox",
+        'viewBox',
         `${this.domainMinimum} ${this.rangeMinimum} ${this.domainMaximum -
           this.domainMinimum} ${this.rangeMaximum - this.rangeMinimum}`
       );
-      this.svg.setAttribute("transform", `scale(1,-1)`);
+      this.svg.setAttribute('transform', `scale(1,-1)`);
 
       this.circles = new Circles(this.svg, this.keyFunction);
 
@@ -90,7 +90,7 @@ export class ScatterPlot {
         .r(3)
         .fill(this.fillProducer)
         .opacity(0.5)
-        .stroke("black")
+        .stroke('black')
         .strokeWidth(0.5)
         .cx(xFunction)
         .cy(yFunction);
