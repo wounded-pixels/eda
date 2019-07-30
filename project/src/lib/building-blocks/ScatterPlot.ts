@@ -68,6 +68,7 @@ export class ScatterPlot {
 
   update(data: any[]) {
     if (this.circles === null) {
+      this.svg.innerHTML = "";
       this.svg.setAttribute(
         "viewBox",
         `${this.domainMinimum} ${this.rangeMinimum} ${this.domainMaximum -
