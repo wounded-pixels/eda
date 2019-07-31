@@ -1,5 +1,3 @@
-import { results } from '../building-blocks/ScatterPlot.stories';
-
 export const createResizableDiv = (
   minWidth: number,
   minHeight: number,
