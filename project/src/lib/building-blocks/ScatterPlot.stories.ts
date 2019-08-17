@@ -1,6 +1,6 @@
 import { storiesOf } from '@storybook/html';
 import { ScatterPlot } from './ScatterPlot';
-import { createResizableDiv } from '../test-utils/containers';
+import { createResizableDiv } from '@wounded-pixels/svg-bindings';
 
 const fred = { id: 1, height: 65, weight: 150, gender: 'm' };
 const barney = { id: 2, height: 70, weight: 155, gender: 'm' };
