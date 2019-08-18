@@ -19,14 +19,14 @@
   "dependencies": {
     "@types/node": "11.11.3",
     "@types/storybook__html": "^5.0.2",
-    "@wounded-pixels/svg-bindings": "^0.2.0"
+    "@wounded-pixels/svg-bindings": "^0.3.0"
   },
   "scripts": {
     "test": "jest --watch ./src/lib",
     "coverage": "jest --coverage --watch  ./src/lib",
     "build": "rollup -c && tsc -p ./tsconfig-typings.json",
     "dev": "watch 'npm run build' src",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6007",
     "build-storybook": "build-storybook"
   },
   "eslintConfig": {},
