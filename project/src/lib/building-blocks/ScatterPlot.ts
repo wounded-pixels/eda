@@ -1,9 +1,9 @@
 import {
-  createSvgElement,
   Circles,
   KeyFunction,
   NumberFunction,
   StringProducer,
+  createResponsiveSvg,
 } from '@wounded-pixels/svg-bindings';
 
 export class ScatterPlot {
@@ -21,11 +21,7 @@ export class ScatterPlot {
 
   constructor(parent: Element) {
     this.parent = parent;
-    this.svg = createSvgElement(
-      'svg',
-      { width: '100%', height: 'auto' },
-      this.parent
-    );
+    this.svg = createResponsiveSvg(parent);
   }
 
   id(keyFunction: KeyFunction): ScatterPlot {
@@ -67,14 +63,16 @@ export class ScatterPlot {
   }
 
   update(data: any[]) {
+    // recreate circles if too much has changed
     if (this.circles === null) {
       this.svg.innerHTML = '';
       this.svg.setAttribute(
         'viewBox',
-        `${this.domainMinimum} ${this.rangeMinimum} ${this.domainMaximum -
-          this.domainMinimum} ${this.rangeMaximum - this.rangeMinimum}`
+        `${this.domainMinimum}
+         ${-1 * this.rangeMaximum}
+         ${this.domainMaximum - this.domainMinimum}
+         ${this.rangeMaximum - this.rangeMinimum}`
       );
-      this.svg.setAttribute('transform', `scale(1,-1)`);
 
       this.circles = new Circles(this.svg, this.keyFunction);
 
@@ -83,7 +81,7 @@ export class ScatterPlot {
       };
 
       const yFunction = (d: any) => {
-        return this.yFunction ? this.yFunction(d) : 0;
+        return this.yFunction ? -1 * this.yFunction(d) : 0;
       };
 
       this.circles
