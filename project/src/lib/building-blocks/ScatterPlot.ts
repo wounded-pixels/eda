@@ -4,10 +4,12 @@ import {
   NumberFunction,
   StringProducer,
   createResponsiveSvg,
+  createSvgElement,
 } from '@wounded-pixels/svg-bindings';
 
 export class ScatterPlot {
   private readonly parent: Element;
+  private readonly outer: SVGElement;
   private readonly svg: SVGElement;
   private circles: Circles | null = null;
   private keyFunction: KeyFunction = d => d.id;
@@ -21,7 +23,8 @@ export class ScatterPlot {
 
   constructor(parent: Element) {
     this.parent = parent;
-    this.svg = createResponsiveSvg(parent);
+    this.outer = createResponsiveSvg(parent);
+    this.svg = createResponsiveSvg(this.outer);
   }
 
   id(keyFunction: KeyFunction): ScatterPlot {
@@ -63,7 +66,7 @@ export class ScatterPlot {
   }
 
   update(data: any[]) {
-    // recreate circles if too much has changed
+    // recreate if too much has changed
     if (this.circles === null) {
       this.svg.innerHTML = '';
       this.svg.setAttribute(
@@ -73,6 +76,10 @@ export class ScatterPlot {
          ${this.domainMaximum - this.domainMinimum}
          ${this.rangeMaximum - this.rangeMinimum}`
       );
+      this.svg.setAttribute('x', '10');
+      this.svg.setAttribute('y', '10');
+      this.svg.setAttribute('width', '80');
+      this.svg.setAttribute('height', '80');
 
       this.circles = new Circles(this.svg, this.keyFunction);
 
@@ -92,6 +99,29 @@ export class ScatterPlot {
         .strokeWidth(0.5)
         .cx(xFunction)
         .cy(yFunction);
+
+      const bottom = -1 * this.rangeMinimum;
+      const top = -1 * this.rangeMaximum;
+
+      // x axis
+      createSvgElement('line', this.svg, {
+        x1: '' + this.domainMinimum,
+        y1: '' + bottom,
+        x2: '' + this.domainMaximum,
+        y2: '' + bottom,
+        stroke: 'black',
+        strokeWidth: '0.5',
+      });
+
+      // y axis
+      createSvgElement('line', this.svg, {
+        x1: '' + this.domainMinimum,
+        y1: '' + bottom,
+        x2: '' + this.domainMinimum,
+        y2: '' + top,
+        stroke: 'black',
+        'stroke-width': '0.5',
+      });
     }
 
     this.circles.update(data);

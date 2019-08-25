@@ -16,6 +16,7 @@ const data = [fred, barney, ted, wilma, betty, alice, tina];
 export const results: any = {};
 results.basic = createResizableDiv();
 results.zoomed = createResizableDiv();
+results.ticks = createResizableDiv();
 
 const basicPlot = new ScatterPlot(results.basic)
   .id(d => d.id)
@@ -32,12 +33,21 @@ basicPlot.update(data);
 
 const zoomedPlot = new ScatterPlot(results.zoomed)
   .id(d => d.id)
-  .domain(45, 80)
-  .range(90, 170)
+  .domain(45, 90)
+  .range(115, 160)
   .position(d => d.height, d => d.weight)
   .fill(d => (d.gender === 'm' ? 'blue' : 'orange'));
 zoomedPlot.update(data);
 
+const tickedPlot = new ScatterPlot(results.ticks)
+  .id(d => d.id)
+  .domain(0, 100)
+  .range(0, 200)
+  .position(d => d.height, d => d.weight)
+  .fill(d => (d.gender === 'm' ? 'blue' : 'orange'));
+tickedPlot.update(data);
+
 storiesOf('Scatter Plot', module)
   .add('basic construction', () => results.basic)
-  .add('zoomed in', () => results.zoomed);
+  .add('zoomed in', () => results.zoomed)
+  .add('basic with ticks', () => results.ticks);
