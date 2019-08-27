@@ -2,6 +2,7 @@ import {
   Circles,
   KeyFunction,
   NumberFunction,
+  NumberProducer,
   StringProducer,
   createResponsiveSvg,
   createSvgElement,
@@ -20,6 +21,11 @@ export class ScatterPlot {
   private xFunction?: NumberFunction | null;
   private yFunction?: NumberFunction | null;
   private fillProducer: StringProducer = 'grey';
+  private radiusProducer: NumberProducer = 4;
+  private opacityProducer: NumberProducer = 0.5;
+  private strokeProducer: StringProducer = 'grey';
+  private strokeWidthProducer: NumberProducer = 1;
+  private axisWidthValue: Number = 3;
 
   constructor(parent: Element) {
     this.parent = parent;
@@ -65,21 +71,70 @@ export class ScatterPlot {
     return this;
   }
 
+  radius(radiusProducer: NumberProducer): ScatterPlot {
+    this.radiusProducer = radiusProducer;
+
+    this.circles = null;
+    return this;
+  }
+
+  opacity(opacityProducer: NumberProducer): ScatterPlot {
+    this.opacityProducer = opacityProducer;
+
+    this.circles = null;
+    return this;
+  }
+
+  stroke(strokeProducer: StringProducer): ScatterPlot {
+    this.strokeProducer = strokeProducer;
+
+    this.circles = null;
+    return this;
+  }
+
+  strokeWidth(strokeWidthProducer: NumberProducer) {
+    this.strokeWidthProducer = strokeWidthProducer;
+
+    this.circles = null;
+    return this;
+  }
+
+  axisWidth(axisWidth: Number) {
+    this.axisWidthValue = axisWidth;
+
+    this.circles = null;
+    return this;
+  }
+
   update(data: any[]) {
     // recreate if too much has changed
     if (this.circles === null) {
+      const innerWidth = this.domainMaximum - this.domainMinimum;
+      const innerHeight = this.rangeMaximum - this.rangeMinimum;
+
+      const outerWidth = 100;
+      const outerHeight = (outerWidth * innerHeight) / innerWidth;
+
       this.svg.innerHTML = '';
       this.svg.setAttribute(
         'viewBox',
         `${this.domainMinimum}
          ${-1 * this.rangeMaximum}
-         ${this.domainMaximum - this.domainMinimum}
-         ${this.rangeMaximum - this.rangeMinimum}`
+         ${innerWidth}
+         ${innerHeight}`
       );
-      this.svg.setAttribute('x', '10');
-      this.svg.setAttribute('y', '10');
-      this.svg.setAttribute('width', '80');
-      this.svg.setAttribute('height', '80');
+      this.svg.setAttribute('x', '' + 0.15 * outerWidth);
+      this.svg.setAttribute('y', '' + 0.15 * outerHeight);
+      this.svg.setAttribute('width', '' + 0.7 * outerWidth);
+      this.svg.setAttribute('height', '' + 0.7 * outerHeight);
+
+      this.outer.setAttribute(
+        'viewBox',
+        `0
+         0
+         ${outerWidth}
+         ${outerHeight}`
+      );
 
       this.circles = new Circles(this.svg, this.keyFunction);
 
@@ -92,11 +147,11 @@ export class ScatterPlot {
       };
 
       this.circles
-        .r(3)
         .fill(this.fillProducer)
-        .opacity(0.5)
-        .stroke('black')
-        .strokeWidth(0.5)
+        .opacity(this.opacityProducer)
+        .r(this.radiusProducer)
+        .stroke(this.strokeProducer)
+        .strokeWidth(this.strokeWidthProducer)
         .cx(xFunction)
         .cy(yFunction);
 
@@ -110,7 +165,7 @@ export class ScatterPlot {
         x2: '' + this.domainMaximum,
         y2: '' + bottom,
         stroke: 'black',
-        strokeWidth: '0.5',
+        'stroke-width': '' + this.axisWidthValue,
       });
 
       // y axis
@@ -120,7 +175,7 @@ export class ScatterPlot {
         x2: '' + this.domainMinimum,
         y2: '' + top,
         stroke: 'black',
-        'stroke-width': '0.5',
+        'stroke-width': '' + this.axisWidthValue,
       });
     }
 

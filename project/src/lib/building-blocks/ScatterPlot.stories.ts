@@ -22,7 +22,12 @@ const basicPlot = new ScatterPlot(results.basic)
   .id(d => d.id)
   .domain(0, 100)
   .range(0, 200)
-  .fill(d => (d.gender === 'm' ? 'blue' : 'green'));
+  .fill(d => (d.gender === 'm' ? 'blue' : 'green'))
+  .opacity(0.5)
+  .radius(d => (d.gender === 'm' ? 3 : 5))
+  .stroke('blue')
+  .strokeWidth(0.2)
+  .axisWidth(3);
 
 basicPlot.update(data);
 basicPlot
@@ -36,7 +41,12 @@ const zoomedPlot = new ScatterPlot(results.zoomed)
   .domain(45, 90)
   .range(115, 160)
   .position(d => d.height, d => d.weight)
-  .fill(d => (d.gender === 'm' ? 'blue' : 'orange'));
+  .fill(d => (d.gender === 'm' ? 'blue' : 'orange'))
+  .opacity(0.5)
+  .radius(d => (d.gender === 'm' ? 1 : 1.5))
+  .stroke(d => (d.gender === 'm' ? 'black' : 'blue'))
+  .strokeWidth(0.5)
+  .axisWidth(0.5);
 zoomedPlot.update(data);
 
 const tickedPlot = new ScatterPlot(results.ticks)
