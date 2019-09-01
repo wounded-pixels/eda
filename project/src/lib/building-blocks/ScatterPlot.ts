@@ -25,7 +25,16 @@ export class ScatterPlot {
   private opacityProducer: NumberProducer = 0.5;
   private strokeProducer: StringProducer = 'grey';
   private strokeWidthProducer: NumberProducer = 1;
-  private axisWidthValue: Number = 3;
+  private backgroundFillValue: string = 'none';
+  private axisStrokeValue: string = 'grey';
+  private axisStrokeWidthValue: number = 3;
+  private tickStrokeWidthValue: number = 0.5;
+  private tickStrokeValue: string = 'lightgrey';
+  private xTickValues: number[] = [];
+  private yTickValues: number[] = [];
+
+  // todo coherent defaults
+  // todo maybe pass themes?
 
   constructor(parent: Element) {
     this.parent = parent;
@@ -99,8 +108,50 @@ export class ScatterPlot {
     return this;
   }
 
-  axisWidth(axisWidth: Number) {
-    this.axisWidthValue = axisWidth;
+  axisStroke(stroke: string): ScatterPlot {
+    this.axisStrokeValue = stroke;
+
+    this.circles = null;
+    return this;
+  }
+
+  axisStrokeWidth(axisWidth: number) {
+    this.axisStrokeWidthValue = axisWidth;
+
+    this.circles = null;
+    return this;
+  }
+
+  xTicks(xTicks: number[]) {
+    this.xTickValues = xTicks;
+
+    this.circles = null;
+    return this;
+  }
+
+  yTicks(yTicks: number[]) {
+    this.yTickValues = yTicks;
+
+    this.circles = null;
+    return this;
+  }
+
+  tickStrokeWidth(width: number) {
+    this.tickStrokeWidthValue = width;
+
+    this.circles = null;
+    return this;
+  }
+
+  tickStroke(stroke: string) {
+    this.tickStrokeValue = stroke;
+
+    this.circles = null;
+    return this;
+  }
+
+  backgroundFill(fill: string) {
+    this.backgroundFillValue = fill;
 
     this.circles = null;
     return this;
@@ -118,10 +169,10 @@ export class ScatterPlot {
       this.svg.innerHTML = '';
       this.svg.setAttribute(
         'viewBox',
-        `${this.domainMinimum}
-         ${-1 * this.rangeMaximum}
-         ${innerWidth}
-         ${innerHeight}`
+        `
+        ${this.domainMinimum}
+        ${-1 * this.rangeMaximum}
+        ${innerWidth} ${innerHeight}`
       );
       this.svg.setAttribute('x', '' + 0.15 * outerWidth);
       this.svg.setAttribute('y', '' + 0.15 * outerHeight);
@@ -135,6 +186,15 @@ export class ScatterPlot {
          ${outerWidth}
          ${outerHeight}`
       );
+
+      // inner background
+      createSvgElement('rect', this.svg, {
+        x: '' + 0,
+        y: '' + -1 * this.rangeMaximum,
+        width: '' + innerWidth,
+        height: '' + innerHeight,
+        fill: this.backgroundFillValue,
+      });
 
       this.circles = new Circles(this.svg, this.keyFunction);
 
@@ -158,14 +218,39 @@ export class ScatterPlot {
       const bottom = -1 * this.rangeMinimum;
       const top = -1 * this.rangeMaximum;
 
+      // x ticks
+      this.xTickValues.forEach(xPosition => {
+        createSvgElement('line', this.svg, {
+          x1: '' + xPosition,
+          y1: '' + bottom,
+          x2: '' + xPosition,
+          y2: '' + top,
+          stroke: this.tickStrokeValue,
+          'stroke-width': '' + this.tickStrokeWidthValue,
+        });
+      });
+
+      // y ticks
+      this.yTickValues.forEach(rawYPosition => {
+        const yPosition = -1 * rawYPosition;
+        createSvgElement('line', this.svg, {
+          x1: '' + this.domainMinimum,
+          y1: '' + yPosition,
+          x2: '' + this.domainMaximum,
+          y2: '' + yPosition,
+          stroke: this.tickStrokeValue,
+          'stroke-width': '' + this.tickStrokeWidthValue,
+        });
+      });
+
       // x axis
       createSvgElement('line', this.svg, {
         x1: '' + this.domainMinimum,
         y1: '' + bottom,
         x2: '' + this.domainMaximum,
         y2: '' + bottom,
-        stroke: 'black',
-        'stroke-width': '' + this.axisWidthValue,
+        stroke: this.axisStrokeValue,
+        'stroke-width': '' + this.axisStrokeWidthValue,
       });
 
       // y axis
@@ -174,8 +259,8 @@ export class ScatterPlot {
         y1: '' + bottom,
         x2: '' + this.domainMinimum,
         y2: '' + top,
-        stroke: 'black',
-        'stroke-width': '' + this.axisWidthValue,
+        stroke: this.axisStrokeValue,
+        'stroke-width': '' + this.axisStrokeWidthValue,
       });
     }
 
