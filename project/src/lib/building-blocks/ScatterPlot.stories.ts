@@ -14,10 +14,10 @@ const tina = { id: 14, height: 65, weight: 120, gender: 'f' };
 const data = [fred, barney, ted, wilma, betty, alice, tina];
 
 export const results: any = {};
-results.basic = createResizableDiv();
+results.basic = createResizableDiv(50, 100, 200, 400, 300, 600);
 results.zoomed = createResizableDiv();
-results.withTicks = createResizableDiv();
-results.seaborn = createResizableDiv();
+results.withTicks = createResizableDiv(50, 100, 200, 400, 300, 600);
+results.seaborn = createResizableDiv(50, 100, 200, 400, 300, 600);
 
 const basicPlot = new ScatterPlot(results.basic)
   .id(d => d.id)
