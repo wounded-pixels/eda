@@ -1,9 +1,11 @@
 import {
   Circles,
   KeyFunction,
+  Lines,
   NumberFunction,
   NumberProducer,
   StringProducer,
+  Text,
   createResponsiveSvg,
   createSvgElement,
 } from '@wounded-pixels/svg-bindings';
@@ -163,8 +165,14 @@ export class ScatterPlot {
       const innerWidth = this.domainMaximum - this.domainMinimum;
       const innerHeight = this.rangeMaximum - this.rangeMinimum;
 
-      const outerWidth = 100;
-      const outerHeight = (outerWidth * innerHeight) / innerWidth;
+      // todo: percentage -> field
+      const topMargin = innerHeight * 0.1;
+      const bottomMargin = innerHeight * 0.12;
+      const leftMargin = innerWidth * 0.18;
+      const rightMargin = innerWidth * 0.06;
+
+      const outerWidth = innerWidth + leftMargin + rightMargin;
+      const outerHeight = innerHeight + topMargin + bottomMargin;
 
       this.svg.innerHTML = '';
       this.svg.setAttribute(
@@ -174,17 +182,18 @@ export class ScatterPlot {
         ${-1 * this.rangeMaximum}
         ${innerWidth} ${innerHeight}`
       );
-      this.svg.setAttribute('x', '' + 0.15 * outerWidth);
-      this.svg.setAttribute('y', '' + 0.15 * outerHeight);
-      this.svg.setAttribute('width', '' + 0.7 * outerWidth);
-      this.svg.setAttribute('height', '' + 0.7 * outerHeight);
+      this.svg.setAttribute('x', '' + this.domainMinimum);
+      this.svg.setAttribute('y', '' + -1 * this.rangeMaximum);
+      this.svg.setAttribute('width', '' + innerWidth);
+      this.svg.setAttribute('height', '' + innerHeight);
 
       this.outer.setAttribute(
         'viewBox',
-        `0
-         0
-         ${outerWidth}
-         ${outerHeight}`
+        `
+        ${this.domainMinimum - leftMargin}
+        ${-1 * this.rangeMaximum - topMargin}
+        ${outerWidth}
+        ${outerHeight}`
       );
 
       // inner background
@@ -218,30 +227,63 @@ export class ScatterPlot {
       const bottom = -1 * this.rangeMinimum;
       const top = -1 * this.rangeMaximum;
 
-      // x ticks
-      this.xTickValues.forEach(xPosition => {
-        createSvgElement('line', this.svg, {
-          x1: '' + xPosition,
-          y1: '' + bottom,
-          x2: '' + xPosition,
-          y2: '' + top,
-          stroke: this.tickStrokeValue,
-          'stroke-width': '' + this.tickStrokeWidthValue,
-        });
+      const adjustedFontSize = Math.floor(
+        Math.min(innerWidth, innerHeight) * 0.1
+      );
+
+      const xTickModel = this.xTickValues.map((xPosition, index) => {
+        return {
+          id: index,
+          xPosition,
+        };
       });
 
-      // y ticks
-      this.yTickValues.forEach(rawYPosition => {
-        const yPosition = -1 * rawYPosition;
-        createSvgElement('line', this.svg, {
-          x1: '' + this.domainMinimum,
-          y1: '' + yPosition,
-          x2: '' + this.domainMaximum,
-          y2: '' + yPosition,
-          stroke: this.tickStrokeValue,
-          'stroke-width': '' + this.tickStrokeWidthValue,
-        });
+      const xTickLines = new Lines(this.svg, m => m.id)
+        .x1(m => m.xPosition)
+        .y1(bottom)
+        .x2(m => m.xPosition)
+        .y2(top)
+        .stroke(this.tickStrokeValue)
+        .strokeWidth(this.tickStrokeWidthValue)
+        .update(xTickModel);
+
+      const yTickModel = this.yTickValues.map((yPosition, index) => {
+        return {
+          id: index,
+          yPosition: -yPosition,
+        };
       });
+
+      const yTickLines = new Lines(this.svg, m => m.id)
+        .x1(this.domainMinimum)
+        .y1(m => m.yPosition)
+        .x2(this.domainMaximum)
+        .y2(m => m.yPosition)
+        .stroke(this.tickStrokeValue)
+        .strokeWidth(this.tickStrokeWidthValue)
+        .update(yTickModel);
+
+      const xLabels = new Text(this.outer, m => m.id)
+        .x(m => m.xPosition)
+        .y(bottom + bottomMargin / 2)
+        .alignmentBaseline('middle')
+        .textAnchor('middle')
+        .fontSize('' + adjustedFontSize + 'px')
+        .stroke('none')
+        .bold(true)
+        .text(m => m.xPosition)
+        .update(xTickModel);
+
+      const yLabels = new Text(this.outer, m => m.id)
+        .x(this.domainMinimum - leftMargin / 2)
+        .y(m => m.yPosition)
+        .alignmentBaseline('middle')
+        .textAnchor('middle')
+        .fontSize('' + adjustedFontSize + 'px')
+        .stroke('none')
+        .bold(true)
+        .text(m => '' + -1 * m.yPosition)
+        .update(yTickModel);
 
       // x axis
       createSvgElement('line', this.svg, {
