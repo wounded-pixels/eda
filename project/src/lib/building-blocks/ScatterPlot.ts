@@ -12,8 +12,8 @@ import {
 
 export class ScatterPlot {
   private readonly parent: Element;
-  private readonly outer: SVGElement;
-  private readonly svg: SVGElement;
+  private outer: SVGElement;
+  private svg: SVGElement;
   private circles: Circles | null = null;
   private keyFunction: KeyFunction = d => d.id;
   private domainMinimum: number = 0;
@@ -34,6 +34,12 @@ export class ScatterPlot {
   private tickStrokeValue: string = 'lightgrey';
   private xTickValues: number[] = [];
   private yTickValues: number[] = [];
+  private plotTitleValue: string = '';
+  private fontFamilyValue: 'serif' | 'sans-serif' = 'sans-serif';
+  private xAxisLabelValue: string = '';
+  private yAxisLabelValue: string = '';
+
+  private static pathId: number = 0;
 
   // todo coherent defaults
   // todo maybe pass themes?
@@ -159,6 +165,34 @@ export class ScatterPlot {
     return this;
   }
 
+  plotTitle(title: string) {
+    this.plotTitleValue = title;
+
+    this.circles = null;
+    return this;
+  }
+
+  xAxisLabel(value: string) {
+    this.xAxisLabelValue = value;
+
+    this.circles = null;
+    return this;
+  }
+
+  yAxisLabel(value: string) {
+    this.yAxisLabelValue = value;
+
+    this.circles = null;
+    return this;
+  }
+
+  fontFamily(value: 'serif' | 'sans-serif') {
+    this.fontFamilyValue = value;
+
+    this.circles = null;
+    return this;
+  }
+
   update(data: any[]) {
     // recreate if too much has changed
     if (this.circles === null) {
@@ -167,14 +201,25 @@ export class ScatterPlot {
 
       // todo: percentage -> field
       const topMargin = innerHeight * 0.1;
-      const bottomMargin = innerHeight * 0.12;
-      const leftMargin = innerWidth * 0.18;
+      const bottomMargin = innerHeight * 0.2;
+      const leftMargin = innerWidth * 0.35;
       const rightMargin = innerWidth * 0.06;
 
       const outerWidth = innerWidth + leftMargin + rightMargin;
       const outerHeight = innerHeight + topMargin + bottomMargin;
 
-      this.svg.innerHTML = '';
+      const bottom = -1 * this.rangeMinimum;
+      const top = -1 * this.rangeMaximum;
+
+      const adjustedFontSize = Math.floor(
+        Math.min(innerWidth, innerHeight) * 0.1
+      );
+
+      this.parent.innerHTML = '';
+
+      this.outer = createResponsiveSvg(this.parent);
+      this.svg = createResponsiveSvg(this.outer);
+
       this.svg.setAttribute(
         'viewBox',
         `
@@ -224,13 +269,6 @@ export class ScatterPlot {
         .cx(xFunction)
         .cy(yFunction);
 
-      const bottom = -1 * this.rangeMinimum;
-      const top = -1 * this.rangeMaximum;
-
-      const adjustedFontSize = Math.floor(
-        Math.min(innerWidth, innerHeight) * 0.1
-      );
-
       const xTickModel = this.xTickValues.map((xPosition, index) => {
         return {
           id: index,
@@ -238,7 +276,8 @@ export class ScatterPlot {
         };
       });
 
-      const xTickLines = new Lines(this.svg, m => m.id)
+      // vertical tick lines
+      new Lines(this.svg, m => m.id)
         .x1(m => m.xPosition)
         .y1(bottom)
         .x2(m => m.xPosition)
@@ -254,7 +293,8 @@ export class ScatterPlot {
         };
       });
 
-      const yTickLines = new Lines(this.svg, m => m.id)
+      // horizontal tick lines
+      new Lines(this.svg, m => m.id)
         .x1(this.domainMinimum)
         .y1(m => m.yPosition)
         .x2(this.domainMaximum)
@@ -263,25 +303,29 @@ export class ScatterPlot {
         .strokeWidth(this.tickStrokeWidthValue)
         .update(yTickModel);
 
-      const xLabels = new Text(this.outer, m => m.id)
+      // x tick labels
+      new Text(this.outer, m => m.id)
         .x(m => m.xPosition)
-        .y(bottom + bottomMargin / 2)
+        .y(bottom + 0.3 * bottomMargin)
         .alignmentBaseline('middle')
         .textAnchor('middle')
         .fontSize('' + adjustedFontSize + 'px')
         .stroke('none')
         .bold(true)
+        .fontFamily(this.fontFamilyValue)
         .text(m => m.xPosition)
         .update(xTickModel);
 
-      const yLabels = new Text(this.outer, m => m.id)
-        .x(this.domainMinimum - leftMargin / 2)
+      // y tick labels
+      new Text(this.outer, m => m.id)
+        .x(this.domainMinimum - 0.35 * leftMargin)
         .y(m => m.yPosition)
         .alignmentBaseline('middle')
         .textAnchor('middle')
         .fontSize('' + adjustedFontSize + 'px')
         .stroke('none')
         .bold(true)
+        .fontFamily(this.fontFamilyValue)
         .text(m => '' + -1 * m.yPosition)
         .update(yTickModel);
 
@@ -304,6 +348,58 @@ export class ScatterPlot {
         stroke: this.axisStrokeValue,
         'stroke-width': '' + this.axisStrokeWidthValue,
       });
+
+      const plotLabel = createSvgElement('text', this.outer, {
+        x: '' + (this.domainMinimum + innerWidth / 2),
+        y: '' + (-1 * this.rangeMaximum - topMargin / 2),
+        'alignment-baseline': 'middle',
+        'text-anchor': 'middle',
+        stroke: 'none',
+        fill: 'black',
+        'font-size': '' + adjustedFontSize + 'px',
+        'font-family': this.fontFamilyValue,
+        weight: 'bold',
+      });
+      plotLabel.innerHTML = this.plotTitleValue;
+
+      const xAxisLabel = createSvgElement('text', this.outer, {
+        x: '' + (this.domainMinimum + innerWidth / 2),
+        y: '' + (bottom + 0.75 * bottomMargin),
+        'alignment-baseline': 'middle',
+        'text-anchor': 'middle',
+        stroke: 'none',
+        fill: 'black',
+        'font-size': '' + adjustedFontSize + 'px',
+        'font-family': this.fontFamilyValue,
+        weight: 'bold',
+      });
+      xAxisLabel.innerHTML = this.xAxisLabelValue;
+
+      const xForYAxisLabel = +(this.domainMinimum - 0.72 * leftMargin);
+
+      const pathId = 'yAxisPathId' + ScatterPlot.pathId++;
+      createSvgElement('path', this.outer, {
+        id: pathId,
+        d: `M ${xForYAxisLabel} ${bottom -
+          0.25 * innerHeight} L ${xForYAxisLabel} ${top}`,
+      });
+
+      const yAxisLabel = createSvgElement('text', this.outer, {
+        'alignment-baseline': 'middle',
+        'text-anchor': 'start',
+        stroke: 'none',
+        fill: 'black',
+        'font-size': '' + adjustedFontSize + 'px',
+        'font-family': this.fontFamilyValue,
+        weight: 'bold',
+      });
+      yAxisLabel.innerHTML = `
+        <textPath href="#${pathId}">
+            ${this.yAxisLabelValue}
+        </textPath>
+      `;
+
+      // todo: fields for plot label cosmetics
     }
 
     this.circles.update(data);
