@@ -42,7 +42,11 @@ const tickedPlot = new ScatterPlot(results.withTicks)
   .tickStroke('blue')
   .tickStrokeWidth(1)
   .xTicks([20, 40, 60, 80])
-  .yTicks([40, 80, 120, 160]);
+  .yTicks([40, 80, 120, 160])
+  .xAxisLabel('height (inches)')
+  .yAxisLabel('weight (pounds)')
+  .plotTitle('With Ticks')
+  .fontFamily('serif');
 
 const zoomedPlot = new ScatterPlot(results.zoomed)
   .id(d => d.id)
@@ -56,7 +60,10 @@ const zoomedPlot = new ScatterPlot(results.zoomed)
   .strokeWidth(0.5)
   .axisStrokeWidth(0.5)
   .xTicks([50, 60, 70, 80])
-  .yTicks([120, 130, 140, 150]);
+  .yTicks([120, 130, 140, 150])
+  .xAxisLabel('height (inches)')
+  .yAxisLabel('weight (pounds)')
+  .plotTitle('Zoomed');
 
 const seabornPlot = new ScatterPlot(results.seaborn)
   .id(d => d.id)
@@ -70,7 +77,10 @@ const seabornPlot = new ScatterPlot(results.seaborn)
   .tickStrokeWidth(1)
   .tickStroke('white')
   .xTicks([20, 40, 60, 80])
-  .yTicks([40, 80, 120, 160]);
+  .yTicks([40, 80, 120, 160])
+  .xAxisLabel('height (inches)')
+  .yAxisLabel('weight (pounds)')
+  .plotTitle('Seaborn');
 
 zoomedPlot.update(data);
 tickedPlot.update(data);
