@@ -41,7 +41,7 @@ export class ScatterPlot {
   private topMarginRatioValue: number = 0.15;
   private bottomMarginRatioValue: number = 0.24;
   private leftMarginRatioValue: number = 0.35;
-  private rightMarginRatioValue: number = 0.06;
+  private rightMarginRatioValue: number = 0.1;
   private xScale: number = 1;
   private yScale: number = 1;
 
@@ -286,7 +286,7 @@ export class ScatterPlot {
 
       // inner background
       createSvgElement('rect', this.svg, {
-        x: '' + 0,
+        x: '' + this.xScale * this.domainMinimum,
         y: '' + this.yScale * this.rangeMaximum,
         width: '' + innerWidth,
         height: '' + innerHeight,
