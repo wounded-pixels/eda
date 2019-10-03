@@ -10,6 +10,32 @@ import {
   createSvgElement,
 } from '@wounded-pixels/svg-bindings';
 
+const calculateDefaultTicks = (minimum: number, maximum: number) => {
+  const minimumWhitespaceRatio = 0.15;
+  const goalTicks = 5;
+
+  const span = maximum - minimum;
+  const rawStep = span / goalTicks;
+
+  let step = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  while (span / step > goalTicks) {
+    step *= 2;
+  }
+
+  const start = Math.round(minimum / step) * step;
+  const stop = Math.round(maximum / step) * step;
+
+  const ticks = [];
+  const tickStart =
+    (start - minimum) / step > minimumWhitespaceRatio ? start : start + step;
+  const tickStop =
+    (maximum - stop) / step > minimumWhitespaceRatio ? stop : stop - step;
+  for (let tick = tickStart; tick <= tickStop; tick += step) {
+    ticks.push(tick);
+  }
+  return ticks;
+};
+
 export class ScatterPlot {
   private readonly parent: Element;
   private outer: SVGElement;
@@ -33,7 +59,9 @@ export class ScatterPlot {
   private tickStrokeWidthValue: number = 0.5;
   private tickStrokeValue: string = 'lightgrey';
   private xTickValues: number[] = [];
+  private customXTicks: boolean = false;
   private yTickValues: number[] = [];
+  private customYTicks: boolean = false;
   private plotTitleValue: string = '';
   private fontFamilyValue: 'serif' | 'sans-serif' = 'sans-serif';
   private xAxisLabelValue: string = '';
@@ -66,6 +94,13 @@ export class ScatterPlot {
     this.domainMinimum = minimum;
     this.domainMaximum = maximum;
 
+    if (!this.customXTicks) {
+      this.xTickValues = calculateDefaultTicks(
+        this.domainMinimum,
+        this.domainMaximum
+      );
+    }
+
     this.circles = null;
     return this;
   }
@@ -73,6 +108,13 @@ export class ScatterPlot {
   range(minimum: number, maximum: number): ScatterPlot {
     this.rangeMinimum = minimum;
     this.rangeMaximum = maximum;
+
+    if (!this.customYTicks) {
+      this.yTickValues = calculateDefaultTicks(
+        this.rangeMinimum,
+        this.rangeMaximum
+      );
+    }
 
     this.circles = null;
     return this;
@@ -137,6 +179,7 @@ export class ScatterPlot {
 
   xTicks(xTicks: number[]) {
     this.xTickValues = xTicks;
+    this.customXTicks = true;
 
     this.circles = null;
     return this;
@@ -144,6 +187,7 @@ export class ScatterPlot {
 
   yTicks(yTicks: number[]) {
     this.yTickValues = yTicks;
+    this.customYTicks = true;
 
     this.circles = null;
     return this;
