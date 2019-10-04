@@ -10,31 +10,7 @@ import {
   createSvgElement,
 } from '@wounded-pixels/svg-bindings';
 
-const calculateDefaultTicks = (minimum: number, maximum: number) => {
-  const minimumWhitespaceRatio = 0.15;
-  const goalTicks = 5;
-
-  const span = maximum - minimum;
-  const rawStep = span / goalTicks;
-
-  let step = Math.pow(10, Math.floor(Math.log10(rawStep)));
-  while (span / step > goalTicks) {
-    step *= 2;
-  }
-
-  const start = Math.round(minimum / step) * step;
-  const stop = Math.round(maximum / step) * step;
-
-  const ticks = [];
-  const tickStart =
-    (start - minimum) / step > minimumWhitespaceRatio ? start : start + step;
-  const tickStop =
-    (maximum - stop) / step > minimumWhitespaceRatio ? stop : stop - step;
-  for (let tick = tickStart; tick <= tickStop; tick += step) {
-    ticks.push(tick);
-  }
-  return ticks;
-};
+import { calculateDefaultTicks } from '../util/calculations';
 
 export class ScatterPlot {
   private readonly parent: Element;
