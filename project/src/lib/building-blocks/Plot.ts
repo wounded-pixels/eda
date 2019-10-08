@@ -14,17 +14,21 @@ import { calculateDefaultTicks } from '../util/calculations';
 
 export abstract class Plot {
   private readonly parent: Element;
-  private outer: SVGElement;
 
+  protected outer: SVGElement;
   protected svg: SVGElement;
   protected keyFunction: KeyFunction = d => d.id;
 
-  private domainMinimum: number = 0;
-  private domainMaximum: number = 100;
-  private rangeMinimum: number = 0;
-  private rangeMaximum: number = 100;
-  private xFunction?: NumberFunction | null;
-  private yFunction?: NumberFunction | null;
+  protected domainMinimum: number = 0;
+  protected domainMaximum: number = 100;
+  protected rangeMinimum: number = 0;
+  protected rangeMaximum: number = 100;
+
+  protected leftMargin: number = 1;
+  protected adjustedFontSize: number = 10;
+
+  protected xFunction: NumberFunction = () => 1;
+  protected yFunction: NumberFunction = () => 1;
 
   protected scaledXFunction: NumberProducer = 1;
   protected scaledYFunction: NumberProducer = 1;
@@ -37,22 +41,22 @@ export abstract class Plot {
   private backgroundFillValue: string = 'none';
   private axisStrokeValue: string = 'grey';
   private axisStrokeWidthValue: number = 3;
-  private tickStrokeWidthValue: number = 0.5;
-  private tickStrokeValue: string = 'lightgrey';
+  protected tickStrokeWidthValue: number = 0.5;
+  protected tickStrokeValue: string = 'lightgrey';
   private xTickValues: number[] = [];
   private customXTicks: boolean = false;
   private yTickValues: number[] = [];
   private customYTicks: boolean = false;
   private plotTitleValue: string = '';
-  private fontFamilyValue: 'serif' | 'sans-serif' = 'sans-serif';
+  protected fontFamilyValue: 'serif' | 'sans-serif' = 'sans-serif';
   private xAxisLabelValue: string = '';
   private yAxisLabelValue: string = '';
   private topMarginRatioValue: number = 0.15;
   private bottomMarginRatioValue: number = 0.24;
   private leftMarginRatioValue: number = 0.35;
   private rightMarginRatioValue: number = 0.1;
-  private xScale: number = 1;
-  private yScale: number = 1;
+  protected xScale: number = 1;
+  protected yScale: number = 1;
 
   private dirty: boolean = true;
 
@@ -265,16 +269,16 @@ export abstract class Plot {
 
       const topMargin = innerHeight * this.topMarginRatioValue;
       const bottomMargin = innerHeight * this.bottomMarginRatioValue;
-      const leftMargin = innerWidth * this.leftMarginRatioValue;
+      this.leftMargin = innerWidth * this.leftMarginRatioValue;
       const rightMargin = innerWidth * this.rightMarginRatioValue;
 
-      const outerWidth = innerWidth + leftMargin + rightMargin;
+      const outerWidth = innerWidth + this.leftMargin + rightMargin;
       const outerHeight = innerHeight + topMargin + bottomMargin;
 
       const bottom = this.yScale * this.rangeMinimum;
       const top = this.yScale * this.rangeMaximum;
 
-      const adjustedFontSize = Math.floor(
+      this.adjustedFontSize = Math.floor(
         Math.min(innerWidth, innerHeight) * 0.1
       );
 
@@ -298,7 +302,7 @@ export abstract class Plot {
       this.outer.setAttribute(
         'viewBox',
         `
-        ${this.xScale * this.domainMinimum - leftMargin}
+        ${this.xScale * this.domainMinimum - this.leftMargin}
         ${this.yScale * this.rangeMaximum - topMargin}
         ${outerWidth}
         ${outerHeight}`
@@ -361,7 +365,7 @@ export abstract class Plot {
         .y(bottom + 0.1 * bottomMargin)
         .alignmentBaseline('hanging')
         .textAnchor('middle')
-        .fontSize('' + (adjustedFontSize - 1) + 'px')
+        .fontSize('' + (this.adjustedFontSize - 1) + 'px')
         .stroke('none')
         .fill('black')
         .bold(false)
@@ -371,11 +375,11 @@ export abstract class Plot {
 
       // y tick labels
       new Text(this.outer, m => m.id)
-        .x(this.xScale * this.domainMinimum - 0.05 * leftMargin)
+        .x(this.xScale * this.domainMinimum - 0.05 * this.leftMargin)
         .y(m => this.yScale * m.yPosition)
         .alignmentBaseline('middle')
         .textAnchor('end')
-        .fontSize('' + (adjustedFontSize - 1) + 'px')
+        .fontSize('' + (this.adjustedFontSize - 1) + 'px')
         .stroke('none')
         .fill('black')
         .bold(false)
@@ -410,7 +414,7 @@ export abstract class Plot {
         'text-anchor': 'middle',
         stroke: 'none',
         fill: 'black',
-        'font-size': '' + adjustedFontSize + 'px',
+        'font-size': '' + this.adjustedFontSize + 'px',
         'font-family': this.fontFamilyValue,
         'font-weight': 'bold',
       });
@@ -423,7 +427,7 @@ export abstract class Plot {
         'text-anchor': 'middle',
         stroke: 'none',
         fill: 'black',
-        'font-size': '' + adjustedFontSize + 'px',
+        'font-size': '' + this.adjustedFontSize + 'px',
         'font-family': this.fontFamilyValue,
         'font-weight': 'normal',
       });
@@ -431,7 +435,7 @@ export abstract class Plot {
 
       const xForYAxisLabel = +(
         this.xScale * this.domainMinimum -
-        0.72 * leftMargin
+        0.72 * this.leftMargin
       );
 
       const pathId = 'yAxisPathId' + Plot.pathId++;
@@ -446,7 +450,7 @@ export abstract class Plot {
         'text-anchor': 'start',
         stroke: 'none',
         fill: 'black',
-        'font-size': '' + adjustedFontSize + 'px',
+        'font-size': '' + this.adjustedFontSize + 'px',
         'font-family': this.fontFamilyValue,
         'font-weight': 'normal',
       });
