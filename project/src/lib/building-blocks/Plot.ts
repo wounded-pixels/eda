@@ -58,7 +58,7 @@ export abstract class Plot {
   protected xScale: number = 1;
   protected yScale: number = 1;
 
-  private dirty: boolean = true;
+  protected dirty: boolean = true;
 
   private static pathId: number = 0;
 
@@ -68,7 +68,7 @@ export abstract class Plot {
     this.svg = createResponsiveSvg(this.outer);
   }
 
-  abstract updateContents(dirty: boolean, data: any[]): void;
+  protected abstract updateContents(dirty: boolean, data: any[]): void;
 
   id(keyFunction: KeyFunction) {
     this.keyFunction = keyFunction;
@@ -92,7 +92,7 @@ export abstract class Plot {
     return this;
   }
 
-  range(minimum: number, maximum: number) {
+  protected range(minimum: number, maximum: number) {
     this.rangeMinimum = minimum;
     this.rangeMaximum = maximum;
 
@@ -102,14 +102,6 @@ export abstract class Plot {
         this.rangeMaximum
       );
     }
-
-    this.dirty = true;
-    return this;
-  }
-
-  position(xFunction: NumberFunction, yFunction: NumberFunction) {
-    this.xFunction = xFunction;
-    this.yFunction = yFunction;
 
     this.dirty = true;
     return this;
@@ -318,11 +310,11 @@ export abstract class Plot {
       });
 
       this.scaledXFunction = (d: any) => {
-        return this.xFunction ? this.xScale * this.xFunction(d) : 0;
+        return this.xScale * this.xFunction(d);
       };
 
       this.scaledYFunction = (d: any) => {
-        return this.yFunction ? this.yScale * this.yFunction(d) : 0;
+        return this.yScale * this.yFunction(d);
       };
 
       const xTickModel = this.xTickValues.map((xPosition, index) => {

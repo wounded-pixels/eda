@@ -10,7 +10,6 @@ import {
   createSvgElement,
 } from '@wounded-pixels/svg-bindings';
 
-import { calculateDefaultTicks } from '../util/calculations';
 import { Plot } from './Plot';
 
 export class ScatterPlot extends Plot {
@@ -23,6 +22,19 @@ export class ScatterPlot extends Plot {
 
   radius(radiusProducer: NumberProducer) {
     this.radiusProducer = radiusProducer;
+    return this;
+  }
+
+  position(xFunction: NumberFunction, yFunction: NumberFunction) {
+    this.xFunction = xFunction;
+    this.yFunction = yFunction;
+
+    this.dirty = true;
+    return this;
+  }
+
+  range(minimum: number, maximum: number) {
+    super.range(minimum, maximum);
     return this;
   }
 

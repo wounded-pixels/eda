@@ -17,6 +17,7 @@ export class DotPlot extends Plot {
   private circles: Circles = new Circles(this.svg, () => '');
   private labels: Text = new Text(this.svg, () => '');
   private rowLines: Lines = new Lines(this.svg, () => '');
+  private dataLength: number = 0;
 
   private radiusProducer: NumberProducer = 4;
   private labelFunction: StringFunction = () => '';
@@ -44,12 +45,12 @@ export class DotPlot extends Plot {
     return this;
   }
 
-  updateContents(dirty: boolean, data: any[]) {
+  protected updateContents(dirty: boolean, data: any[]) {
     if (dirty) {
-      this.rowHeight = Math.min(
-        10,
-        (this.rangeMaximum - this.rangeMinimum) / data.length
-      );
+      this.rowHeight =
+        (this.rangeMaximum - this.rangeMinimum) / (data.length + 1);
+
+      this.dataLength = data.length;
 
       this.circles = new Circles(this.svg, this.keyFunction);
 
@@ -64,11 +65,11 @@ export class DotPlot extends Plot {
 
       // y axis row labels
       this.labels = new Text(this.outer, m => m.id)
-        .x(this.xScale * this.domainMinimum - 0.05 * this.leftMargin)
+        .x(() => this.xScale * this.domainMinimum - 0.05 * this.leftMargin)
         .y(this.scaledYFunction)
         .alignmentBaseline('middle')
         .textAnchor('end')
-        .fontSize(m => this.rowHeight * 0.95 + 'px')
+        .fontSize(() => Math.min(this.rowHeight * 0.95, 10) + 'px')
         .stroke('none')
         .fill('black')
         .bold(false)
