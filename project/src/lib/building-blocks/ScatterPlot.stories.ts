@@ -54,7 +54,7 @@ const smallNegativeThings = [1, 2, 3, 4, 5].map(v => {
 
 const data = [fred, barney, ted, wilma, betty, alice, tina];
 
-export const results: any = {};
+export const results: { [key: string]: HTMLElement } = {};
 results.basic = createResizableDiv(50, 100, 200, 400, 300, 600);
 results.zoomed = createResizableDiv(50, 100, 200, 400, 300, 600);
 results.withTitles = createResizableDiv(50, 100, 200, 400, 300, 600);
@@ -109,7 +109,6 @@ new ScatterPlot(results.seaborn)
   .domain(0, 100)
   .range(0, 200)
   .position(d => d.height, d => d.weight)
-  .fill(d => (d.gender === 'm' ? 'blue' : 'orange'))
   .backgroundFill('lightgrey')
   .axisStroke('none')
   .tickStrokeWidth(1)
