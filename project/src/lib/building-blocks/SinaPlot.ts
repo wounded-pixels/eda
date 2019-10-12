@@ -13,25 +13,26 @@ import {
 
 import { Plot } from './Plot';
 
-export class DotPlot extends Plot {
+export class SinaPlot extends Plot {
   private circles: Circles = new Circles(this.svg, () => '');
   private labels: Text = new Text(this.svg, () => '');
   private rowLines: Lines = new Lines(this.svg, () => '');
 
   private radiusProducer: NumberProducer = 4;
   private labelFunction: StringFunction = () => '';
-
+  private categoryValue: string;
   private rowHeight: number = 10;
+  private categoryToRowMap: { [key: string]: number } = {};
+  private categoryInstances: string[] = [];
+  private categoryLabels: { id: number; name: string }[] = [];
 
-  constructor(parent: Element) {
+  constructor(parent: Element, categoryValue: string) {
     super(parent);
-
-    this.yFunction = d => (d._dpSortOrder + 1) * this.rowHeight;
-  }
-
-  radius(radiusProducer: NumberProducer) {
-    this.radiusProducer = radiusProducer;
-    return this;
+    this.categoryValue = categoryValue;
+    this.yFunction = d => {
+      const categoryInstance = d[this.categoryValue];
+      return this.categoryToRowMap[categoryInstance] * this.rowHeight;
+    };
   }
 
   value(xFunction: NumberFunction) {
@@ -39,15 +40,28 @@ export class DotPlot extends Plot {
     return this;
   }
 
-  label(labelFunction: StringFunction) {
-    this.labelFunction = labelFunction;
-    return this;
-  }
-
   protected updateContents(dirty: boolean, data: any[]) {
     if (dirty) {
+      this.categoryToRowMap = {};
+      const allCategoryInstances: string[] = data.map(
+        d => d[this.categoryValue]
+      );
+      this.categoryInstances = Array.from(new Set(allCategoryInstances));
+      this.categoryInstances.forEach((category, index) => {
+        this.categoryToRowMap[category] = index + 1;
+      });
+
+      this.categoryLabels = this.categoryInstances.map((ci, index) => {
+        return {
+          id: index,
+          name: ci,
+          [this.categoryValue]: ci,
+        };
+      });
+
       this.rowHeight =
-        (this.rangeMaximum - this.rangeMinimum) / (data.length + 1);
+        (this.rangeMaximum - this.rangeMinimum) /
+        (this.categoryInstances.length + 1);
 
       this.circles = new Circles(this.svg, this.keyFunction);
 
@@ -71,7 +85,7 @@ export class DotPlot extends Plot {
         .fill('black')
         .bold(false)
         .fontFamily(this.fontFamilyValue)
-        .text(this.labelFunction);
+        .text(d => d.name);
 
       this.rowLines = new Lines(this.svg, m => m.id)
         .x1(this.xScale * this.domainMinimum)
@@ -82,17 +96,7 @@ export class DotPlot extends Plot {
         .strokeWidth(this.tickStrokeWidthValue);
     }
 
-    data.sort((d1, d2) => {
-      const value1 = this.xFunction(d1);
-      const value2 = this.xFunction(d2);
-      return Math.sign(value1 - value2);
-    });
-
-    data.forEach((d, index) => {
-      d['_dpSortOrder'] = index;
-    });
-
-    this.labels.update(data);
+    this.labels.update(this.categoryLabels);
     this.rowLines.update(data);
     this.circles.update(data);
   }
