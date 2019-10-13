@@ -22,39 +22,53 @@ for (let ctr = 0; ctr < 4; ctr++) {
 
 const laxWeights = [];
 for (let ctr = 0; ctr < 6; ctr++) {
-  laxWeights.push(160 + ctr * 2.3);
-  laxWeights.push(170 + ctr * 3.2);
-  laxWeights.push(180 + ctr * 2.1);
-  laxWeights.push(190 + ctr * 1.1);
-  laxWeights.push(200 + ctr * 1.2);
+  laxWeights.push(160 + ctr * 3.3);
+  laxWeights.push(170 + ctr * 1.1);
+  laxWeights.push(180 + ctr * 1.1);
 }
 
 const sports = [
-  { name: 'football', weights: footballWeights },
-  { name: 'basketball', weights: basketballWeights },
-  { name: 'LAX', weights: laxWeights },
+  {
+    name: 'football',
+    color: 'red',
+    weights: footballWeights.concat(footballWeights).concat(footballWeights),
+  },
+  {
+    name: 'basketball',
+    color: 'blue',
+    weights: basketballWeights.concat(basketballWeights),
+  },
+  { name: 'LAX', color: 'green', weights: laxWeights.concat(laxWeights) },
 ];
 
 let idCtr = 0;
 const data: any[] = [];
 sports.forEach(sport => {
-  const { weights, name } = sport;
+  const { weights, name, color } = sport;
   weights.forEach(weight => {
     data.push({
       id: idCtr++,
       sport: name,
+      color,
       weight,
     });
   });
 });
 
 export const results: { [key: string]: HTMLElement } = {};
-results.basic = createResizableDiv(200, 100, 300, 150, 400, 200);
+results.basic = createResizableDiv(200, 300, 400, 600, 600, 800);
 
-new SinaPlot(results.basic, 'sport')
+const basic = new SinaPlot(results.basic, 'sport')
   .id(d => d.id)
   .value(d => d.weight)
-  .domain(150, 300)
-  .update(data);
+  .fill(d => d.color)
+  .plotTitle('Weight Distributions')
+  .xAxisLabel('weight (lbs)')
+  .domain(100, 300);
+
+basic.update(data);
+basic.domain(150, 330).update(data);
+
+basic.update(data);
 
 storiesOf('Sina Plot', module).add('basic construction', () => results.basic);

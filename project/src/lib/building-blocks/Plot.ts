@@ -30,8 +30,8 @@ export abstract class Plot {
   protected xFunction: NumberFunction = () => 1;
   protected yFunction: NumberFunction = () => 1;
 
-  protected scaledXFunction: NumberProducer = 1;
-  protected scaledYFunction: NumberProducer = 1;
+  protected scaledXFunction: NumberFunction = () => 1;
+  protected scaledYFunction: NumberFunction = () => 1;
 
   protected fillProducer: StringProducer = 'grey';
   protected opacityProducer: NumberProducer = 0.5;
