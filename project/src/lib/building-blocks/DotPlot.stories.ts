@@ -16,9 +16,7 @@ const data = [fred, barney, ted, wilma, betty, alice, tina];
 export const results: { [key: string]: HTMLElement } = {};
 results.basic = createResizableDiv(200, 100, 300, 150, 400, 200);
 
-// todo: how kosher is this?
 results.zoomed = createResizableDiv(100, 200, 150, 300, 200, 400);
-
 results.changes = createResizableDiv(100, 100, 150, 150, 200, 200);
 
 new DotPlot(results.basic)
