@@ -34,7 +34,7 @@ export class SinaPlot extends Plot {
     this.yFunction = d => {
       const categoryInstance = d[this.categoryValue];
       const rawJitter = d['_edaJitter'] * this.radiusProducer(d) * 2.5;
-      const overflowRatio = Math.abs(rawJitter) / (this.rowHeight / 2);
+      const overflowRatio = Math.abs(rawJitter) / (this.rowHeight / 2.3);
       const jitter =
         overflowRatio <= 1
           ? rawJitter
@@ -110,7 +110,7 @@ export class SinaPlot extends Plot {
         .strokeWidth(this.tickStrokeWidthValue);
     }
 
-    const binWidth = this.radiusProducer({}) * 2.5;
+    const binWidth = this.radiusProducer({}) * 2;
     const numBins =
       (this.xScale * (this.domainMaximum - this.domainMinimum)) / binWidth;
 
