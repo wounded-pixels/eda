@@ -2,43 +2,159 @@ import { storiesOf } from '@storybook/html';
 import { SinaPlot } from './SinaPlot';
 import { createResizableDiv } from '@wounded-pixels/svg-bindings';
 
-const footballWeights = [];
-for (let ctr = 0; ctr < 10; ctr++) {
-  footballWeights.push(180 + ctr * 2.2);
-  footballWeights.push(195 + ctr * 3.1);
-  footballWeights.push(215 + ctr * 4.4);
-  footballWeights.push(260 + ctr * 5.1);
-  footballWeights.push(280 + ctr * 4.7);
-}
-
-const basketballWeights = [];
-for (let ctr = 0; ctr < 4; ctr++) {
-  basketballWeights.push(180 + ctr * 2.1);
-  basketballWeights.push(190 + ctr * 3.3);
-  basketballWeights.push(200 + ctr * 2.1);
-  basketballWeights.push(210 + ctr * 2.5);
-  basketballWeights.push(220 + ctr * 2.1);
-}
-
-const laxWeights = [];
-for (let ctr = 0; ctr < 6; ctr++) {
-  laxWeights.push(160 + ctr * 3.3);
-  laxWeights.push(170 + ctr * 1.1);
-  laxWeights.push(180 + ctr * 1.1);
-}
+const footballWeights = [
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  198,
+  223,
+  225,
+  250,
+  259,
+  241,
+  335,
+  310,
+  279,
+  193,
+  210,
+  315,
+  209,
+  242,
+  167,
+  198,
+  250,
+  230,
+  256,
+  265,
+  265,
+  296,
+  334,
+  224,
+  195,
+  204,
+  295,
+  317,
+  194,
+  181,
+  295,
+  190,
+  249,
+  184,
+  218,
+  195,
+  254,
+  191,
+  305,
+  223,
+  328,
+  332,
+  218,
+  350,
+  211,
+  203,
+  303,
+  240,
+  227,
+  251,
+  320,
+  190,
+  237,
+];
+const basketballWeights = [
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+  190,
+  240,
+  204,
+  186,
+  180,
+  270,
+  200,
+  253,
+  237,
+  215,
+  234,
+  265,
+  250,
+  221,
+  270,
+  180,
+];
+const laxWeights = [
+  180,
+  195,
+  220,
+  185,
+  175,
+  175,
+  180,
+  185,
+  205,
+  190,
+  200,
+  200,
+  ,
+  190,
+  160,
+  180,
+  180,
+  230,
+  195,
+  205,
+  190,
+  205,
+  188,
+  235,
+  185,
+  205,
+  210,
+  220,
+  185,
+  178,
+];
 
 const sports = [
   {
     name: 'football',
     color: 'red',
-    weights: footballWeights.concat(footballWeights).concat(footballWeights),
+    weights: footballWeights,
   },
   {
     name: 'basketball',
     color: 'blue',
-    weights: basketballWeights.concat(basketballWeights),
+    weights: basketballWeights,
   },
-  { name: 'LAX', color: 'green', weights: laxWeights.concat(laxWeights) },
+  { name: 'LAX', color: 'green', weights: laxWeights },
 ];
 
 let idCtr = 0;
