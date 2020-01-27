@@ -2,7 +2,7 @@ import { results } from './SinaPlot.stories';
 
 test('basic construction', () => {
   expect(results.basic.outerHTML).toMatchInlineSnapshot(`
-    "<div style=\\"min-width: 200px; min-height: 300px; width: 400px; height: 600px; max-width: 600px; max-height: 800px; border: 1px solid black; resize: both; overflow: hidden;\\"><svg viewBox=\\"
+    "<div style=\\"min-width: 200px; min-height: 300px; width: 400px; height: 600px; max-width: 600px; max-height: 800px; border: 1px solid black; resize: both; overflow: hidden;\\"><div><svg viewBox=\\"
             35.33333333333334
             -191.66666666666663
             153
@@ -13,6 +13,6 @@ test('basic construction', () => {
             <textPath href=\\"#yAxisPathId1\\">
                 
             </textPath>
-          </text><text fill=\\"black\\" stroke=\\"none\\" stroke-width=\\"1\\" x=\\"80.93333333333334\\" y=\\"-41.66666666666666\\" font-size=\\"10px\\" font-family=\\"sans-serif\\" text-anchor=\\"end\\" alignment-baseline=\\"middle\\" font-weight=\\"normal\\">football</text><text fill=\\"black\\" stroke=\\"none\\" stroke-width=\\"1\\" x=\\"80.93333333333334\\" y=\\"-83.33333333333331\\" font-size=\\"10px\\" font-family=\\"sans-serif\\" text-anchor=\\"end\\" alignment-baseline=\\"middle\\" font-weight=\\"normal\\">basketball</text><text fill=\\"black\\" stroke=\\"none\\" stroke-width=\\"1\\" x=\\"80.93333333333334\\" y=\\"-124.99999999999999\\" font-size=\\"10px\\" font-family=\\"sans-serif\\" text-anchor=\\"end\\" alignment-baseline=\\"middle\\" font-weight=\\"normal\\">LAX</text></svg></div>"
+          </text><text fill=\\"black\\" stroke=\\"none\\" stroke-width=\\"1\\" x=\\"80.93333333333334\\" y=\\"-41.66666666666666\\" font-size=\\"10px\\" font-family=\\"sans-serif\\" text-anchor=\\"end\\" alignment-baseline=\\"middle\\" font-weight=\\"normal\\">football</text><text fill=\\"black\\" stroke=\\"none\\" stroke-width=\\"1\\" x=\\"80.93333333333334\\" y=\\"-83.33333333333331\\" font-size=\\"10px\\" font-family=\\"sans-serif\\" text-anchor=\\"end\\" alignment-baseline=\\"middle\\" font-weight=\\"normal\\">basketball</text><text fill=\\"black\\" stroke=\\"none\\" stroke-width=\\"1\\" x=\\"80.93333333333334\\" y=\\"-124.99999999999999\\" font-size=\\"10px\\" font-family=\\"sans-serif\\" text-anchor=\\"end\\" alignment-baseline=\\"middle\\" font-weight=\\"normal\\">LAX</text></svg></div><svg viewBox=\\"0 0 100 100\\" preserveAspectRatio=\\"xMidYMid meet\\" style=\\"width: 100%; height: 100%; display: inline-block; overflow: hidden;\\"><svg viewBox=\\"0 0 100 100\\" preserveAspectRatio=\\"xMidYMid meet\\" style=\\"width: 100%; height: 100%; display: inline-block; overflow: hidden;\\"></svg></svg><div style=\\"position: absolute; padding: 7px; border-radius: 5px; display: none;\\"></div><div style=\\"position: absolute; padding: 7px; border-radius: 5px; display: none;\\"></div></div>"
   `);
 });
