@@ -1,5 +1,4 @@
 import {
-  Circles,
   KeyFunction,
   Lines,
   NumberFunction,
@@ -14,6 +13,7 @@ import { calculateDefaultTicks } from '../util/calculations';
 
 export abstract class Plot {
   private readonly parent: Element;
+  private readonly intermediate: Element;
 
   protected outer: SVGElement;
   protected svg: SVGElement;
@@ -63,7 +63,10 @@ export abstract class Plot {
   private static pathId: number = 0;
 
   protected constructor(parent: Element) {
+    const intermediate = document.createElement('div');
+    parent.appendChild(intermediate);
     this.parent = parent;
+    this.intermediate = intermediate;
     this.outer = createResponsiveSvg(parent);
     this.svg = createResponsiveSvg(this.outer);
   }
@@ -274,9 +277,9 @@ export abstract class Plot {
         Math.min(innerWidth, innerHeight) * 0.1
       );
 
-      this.parent.innerHTML = '';
+      this.intermediate.innerHTML = '';
 
-      this.outer = createResponsiveSvg(this.parent);
+      this.outer = createResponsiveSvg(this.intermediate);
       this.svg = createResponsiveSvg(this.outer);
 
       this.svg.setAttribute(

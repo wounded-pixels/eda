@@ -123,7 +123,6 @@ const laxWeights = [
   190,
   200,
   200,
-  ,
   190,
   160,
   180,
@@ -180,7 +179,14 @@ const basic = new SinaPlot(results.basic, 'sport')
   .fill(d => d.color)
   .plotTitle('Weight Distributions')
   .xAxisLabel('weight (lbs)')
-  .domain(100, 300);
+  .domain(100, 300)
+  .tooltip((d: { id: string }) => 'Circle ' + d.id, [
+    { label: 'sport', valueProducer: (d: { sport: string }) => d.sport },
+    {
+      label: 'weight',
+      valueProducer: (d: { weight: number }) => '' + d.weight,
+    },
+  ]);
 
 basic.update(data);
 basic.domain(150, 330).update(data);
