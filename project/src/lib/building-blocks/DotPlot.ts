@@ -1,14 +1,10 @@
 import {
   Circles,
-  KeyFunction,
   Lines,
   NumberFunction,
   NumberProducer,
   StringFunction,
-  StringProducer,
   Text,
-  createResponsiveSvg,
-  createSvgElement,
 } from '@wounded-pixels/svg-bindings';
 
 import { Plot } from './Plot';
@@ -23,7 +19,7 @@ export class DotPlot extends Plot {
 
   private rowHeight: number = 10;
 
-  constructor(parent: Element) {
+  constructor(parent: HTMLElement) {
     super(parent);
 
     this.yFunction = d => (d._dpSortOrder + 1) * this.rowHeight;
@@ -50,6 +46,13 @@ export class DotPlot extends Plot {
         (this.rangeMaximum - this.rangeMinimum) / (data.length + 1);
 
       this.circles = new Circles(this.svg, this.keyFunction);
+      this.tooltipLabeledValueProducers.length > 0 &&
+        this.circles.addTooltip(
+          this.tooltipContainer,
+          this.tooltipTitleProducer,
+          this.tooltipLabeledValueProducers,
+          this.tooltipBackgroundColorProducer
+        );
 
       this.circles
         .fill(this.fillProducer)

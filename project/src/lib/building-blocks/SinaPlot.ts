@@ -2,12 +2,10 @@ import {
   Circles,
   Lines,
   NumberFunction,
-  StringProducer,
   Text,
 } from '@wounded-pixels/svg-bindings';
 
 import { Plot } from './Plot';
-import { LabeledValueProducer } from '../../../../../svg-bindings/project/src/lib/bindings/Types';
 
 export class SinaPlot extends Plot {
   private circles: Circles = new Circles(this.svg, () => '');
@@ -20,14 +18,9 @@ export class SinaPlot extends Plot {
   private categoryToRowMap: { [key: string]: number } = {};
   private categoryInstances: string[] = [];
   private categoryLabels: { id: number; name: string }[] = [];
-  private readonly tooltipContainer: HTMLElement;
-  private tooltipBackgroundColorProducer: StringProducer = '#ebdfbe';
-  private tooltipLabeledValueProducers: LabeledValueProducer[] = [];
-  private tooltipTitleProducer: StringProducer = '';
 
   constructor(parent: HTMLElement, categoryValue: string) {
     super(parent);
-    this.tooltipContainer = parent;
 
     // todo: aspect ratio from parent?? or constructor?
     this.rangeMaximum = 300;
@@ -51,18 +44,6 @@ export class SinaPlot extends Plot {
 
   value(xFunction: NumberFunction) {
     this.xFunction = xFunction;
-    return this;
-  }
-
-  tooltip(
-    titleProducer: StringProducer,
-    labeledValueProducers: LabeledValueProducer[],
-    backgroundColorProducer: StringProducer = '#ebdfbe'
-  ) {
-    this.tooltipTitleProducer = titleProducer;
-    this.tooltipLabeledValueProducers = labeledValueProducers;
-    this.tooltipBackgroundColorProducer = backgroundColorProducer;
-
     return this;
   }
 
@@ -91,12 +72,13 @@ export class SinaPlot extends Plot {
         (this.categoryInstances.length + 1);
 
       this.circles = new Circles(this.svg, this.keyFunction);
-      this.circles.addTooltip(
-        this.tooltipContainer,
-        this.tooltipTitleProducer,
-        this.tooltipLabeledValueProducers,
-        this.tooltipBackgroundColorProducer
-      );
+      this.tooltipLabeledValueProducers.length > 0 &&
+        this.circles.addTooltip(
+          this.tooltipContainer,
+          this.tooltipTitleProducer,
+          this.tooltipLabeledValueProducers,
+          this.tooltipBackgroundColorProducer
+        );
 
       this.circles
         .fill(this.fillProducer)

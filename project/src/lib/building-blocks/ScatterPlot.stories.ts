@@ -210,7 +210,11 @@ const changingPlot = new ScatterPlot(results.changing)
   .domain(0, 100)
   .range(0, 200)
   .position(d => d.x, d => d.y)
-  .radius(2);
+  .radius(2)
+  .tooltip((d: { id: string }) => 'Circle ' + d.id, [
+    { label: 'x', valueProducer: (d: { x: number }) => '' + d.x },
+    { label: 'y', valueProducer: (d: { y: number }) => '' + d.y },
+  ]);
 
 changingPlot.update(lotsOfData);
 

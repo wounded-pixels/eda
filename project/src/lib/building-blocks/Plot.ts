@@ -10,6 +10,7 @@ import {
 } from '@wounded-pixels/svg-bindings';
 
 import { calculateDefaultTicks } from '../util/calculations';
+import { LabeledValueProducer } from '../../../../../svg-bindings/project/src/lib/bindings/Types';
 
 export abstract class Plot {
   private readonly parent: Element;
@@ -38,6 +39,11 @@ export abstract class Plot {
   protected strokeProducer: StringProducer = 'grey';
   protected strokeWidthProducer: NumberProducer = 1;
 
+  protected readonly tooltipContainer: HTMLElement;
+  protected tooltipBackgroundColorProducer: StringProducer = '#ebdfbe';
+  protected tooltipLabeledValueProducers: LabeledValueProducer[] = [];
+  protected tooltipTitleProducer: StringProducer = '';
+
   private backgroundFillValue: string = 'none';
   private axisStrokeValue: string = 'grey';
   private axisStrokeWidthValue: number = 3;
@@ -62,9 +68,10 @@ export abstract class Plot {
 
   private static pathId: number = 0;
 
-  protected constructor(parent: Element) {
+  protected constructor(parent: HTMLElement) {
     const intermediate = document.createElement('div');
     parent.appendChild(intermediate);
+    this.tooltipContainer = parent;
     this.parent = parent;
     this.intermediate = intermediate;
     this.outer = createResponsiveSvg(parent);
@@ -92,6 +99,18 @@ export abstract class Plot {
     }
 
     this.dirty = true;
+    return this;
+  }
+
+  tooltip(
+    titleProducer: StringProducer,
+    labeledValueProducers: LabeledValueProducer[],
+    backgroundColorProducer: StringProducer = '#ebdfbe'
+  ) {
+    this.tooltipTitleProducer = titleProducer;
+    this.tooltipLabeledValueProducers = labeledValueProducers;
+    this.tooltipBackgroundColorProducer = backgroundColorProducer;
+
     return this;
   }
 

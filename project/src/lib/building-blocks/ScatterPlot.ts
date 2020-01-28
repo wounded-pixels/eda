@@ -1,13 +1,7 @@
 import {
   Circles,
-  KeyFunction,
-  Lines,
   NumberFunction,
   NumberProducer,
-  StringProducer,
-  Text,
-  createResponsiveSvg,
-  createSvgElement,
 } from '@wounded-pixels/svg-bindings';
 
 import { Plot } from './Plot';
@@ -16,7 +10,7 @@ export class ScatterPlot extends Plot {
   private circles: Circles | null = null;
   private radiusProducer: NumberProducer = 4;
 
-  constructor(parent: Element) {
+  constructor(parent: HTMLElement) {
     super(parent);
   }
 
@@ -41,6 +35,13 @@ export class ScatterPlot extends Plot {
   updateContents(dirty: boolean, data: any[]) {
     if (dirty || !this.circles) {
       this.circles = new Circles(this.svg, this.keyFunction);
+      this.tooltipLabeledValueProducers.length > 0 &&
+        this.circles.addTooltip(
+          this.tooltipContainer,
+          this.tooltipTitleProducer,
+          this.tooltipLabeledValueProducers,
+          this.tooltipBackgroundColorProducer
+        );
 
       this.circles
         .fill(this.fillProducer)
