@@ -24,6 +24,12 @@ new DotPlot(results.basic)
   .domain(0, 100)
   .value(d => d.height)
   .label(d => d.name)
+  .tooltip((d: { name: string }) => d.name, [
+    {
+      label: 'gender',
+      valueProducer: (d: { gender: number }) => '' + d.gender,
+    },
+  ])
   .update(data);
 
 new DotPlot(results.zoomed)
