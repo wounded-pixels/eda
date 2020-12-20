@@ -298,9 +298,6 @@ export abstract class Plot {
 
       this.intermediate.innerHTML = '';
 
-      this.outer = createResponsiveSvg(this.intermediate);
-      this.svg = createResponsiveSvg(this.outer);
-
       this.svg.setAttribute(
         'viewBox',
         `
@@ -336,6 +333,7 @@ export abstract class Plot {
       };
 
       this.scaledYFunction = (d: any) => {
+        const yScale = this.yScale || 1;
         return this.yScale * this.yFunction(d);
       };
 

@@ -66,6 +66,36 @@ results.bigAndSmallThings = createResizableDiv(100, 50, 400, 200, 600, 300);
 results.smallNegativeThings = createResizableDiv(50, 100, 200, 400, 300, 600);
 results.changing = createResizableDiv(50, 100, 200, 400, 300, 600);
 
+const topDiv = document.createElement('div');
+topDiv.style.width = `400px`;
+topDiv.style.height = `200px`;
+const bottomDiv = document.createElement('div');
+bottomDiv.style.width = `400px`;
+bottomDiv.style.height = `200px`;
+results.stacked = document.createElement('div');
+results.stacked.appendChild(topDiv);
+results.stacked.appendChild(bottomDiv);
+
+const topPlot = new ScatterPlot(topDiv)
+  .id(d => d.id)
+  .domain(4, 100)
+  .range(0, 200);
+
+topPlot.update(data);
+topPlot.position(d => d.height, d => d.weight);
+topPlot.update(data);
+topPlot.update(data);
+
+const bottomPlot = new ScatterPlot(bottomDiv)
+  .id(d => d.id)
+  .domain(4, 100)
+  .range(0, 200);
+
+bottomPlot.update(data);
+bottomPlot.position(d => d.height, d => d.weight);
+bottomPlot.update(data);
+bottomPlot.update(data);
+
 const basicPlot = new ScatterPlot(results.basic)
   .id(d => d.id)
   .domain(4, 100)
@@ -240,4 +270,5 @@ storiesOf('Scatter Plot', module)
   .add('small and big things', () => results.smallAndBigThings)
   .add('big and small things', () => results.bigAndSmallThings)
   .add('small negative things', () => results.smallNegativeThings)
-  .add('changing', () => results.changing);
+  .add('changing', () => results.changing)
+  .add('stacked', () => results.stacked);
