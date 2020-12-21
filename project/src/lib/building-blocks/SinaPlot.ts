@@ -8,9 +8,9 @@ import {
 import { Plot } from './Plot';
 
 export class SinaPlot extends Plot {
-  private circles: Circles = new Circles(this.svg, () => '');
-  private labels: Text = new Text(this.svg, () => '');
-  private rowLines: Lines = new Lines(this.svg, () => '');
+  private circles: Circles | undefined;
+  private labels: Text | undefined;
+  private rowLines: Lines | undefined;
 
   private radiusProducer: NumberFunction = () => 1.7;
   private readonly categoryValue: string;
@@ -71,44 +71,51 @@ export class SinaPlot extends Plot {
         (this.rangeMaximum - this.rangeMinimum) /
         (this.categoryInstances.length + 1);
 
-      this.circles = new Circles(this.svg, this.keyFunction);
-      this.tooltipLabeledValueProducers.length > 0 &&
-        this.circles.addTooltip(
-          this.tooltipContainer,
-          this.tooltipTitleProducer,
-          this.tooltipLabeledValueProducers,
-          this.tooltipBackgroundColorProducer
-        );
+      if (!this.circles) {
+        this.circles = new Circles(this.svg, this.keyFunction);
 
-      this.circles
-        .fill(this.fillProducer)
-        .opacity(this.opacityProducer)
-        .r(this.radiusProducer)
-        .stroke(this.strokeProducer)
-        .strokeWidth(this.strokeWidthProducer)
-        .cx(this.scaledXFunction)
-        .cy(this.scaledYFunction);
+        this.tooltipLabeledValueProducers.length > 0 &&
+          this.circles.addTooltip(
+            this.tooltipContainer,
+            this.tooltipTitleProducer,
+            this.tooltipLabeledValueProducers,
+            this.tooltipBackgroundColorProducer
+          );
+
+        this.circles
+          .fill(this.fillProducer)
+          .opacity(this.opacityProducer)
+          .r(this.radiusProducer)
+          .stroke(this.strokeProducer)
+          .strokeWidth(this.strokeWidthProducer)
+          .cx(this.scaledXFunction)
+          .cy(this.scaledYFunction);
+      }
 
       // y axis row labels
-      this.labels = new Text(this.outer, m => m.id)
-        .x(() => this.xScale * this.domainMinimum - 0.05 * this.leftMargin)
-        .y(this.scaledYFunction)
-        .alignmentBaseline('middle')
-        .textAnchor('end')
-        .fontSize(() => Math.min(this.rowHeight * 0.95, 10) + 'px')
-        .stroke('none')
-        .fill('black')
-        .bold(false)
-        .fontFamily(this.fontFamilyValue)
-        .text(d => d.name);
+      if (!this.labels) {
+        this.labels = new Text(this.outer, m => m.id)
+          .x(() => this.xScale * this.domainMinimum - 0.05 * this.leftMargin)
+          .y(this.scaledYFunction)
+          .alignmentBaseline('middle')
+          .textAnchor('end')
+          .fontSize(() => Math.min(this.rowHeight * 0.95, 10) + 'px')
+          .stroke('none')
+          .fill('black')
+          .bold(false)
+          .fontFamily(this.fontFamilyValue)
+          .text(d => d.name);
+      }
 
-      this.rowLines = new Lines(this.svg, m => m.id)
-        .x1(this.xScale * this.domainMinimum)
-        .y1(this.scaledYFunction)
-        .x2(this.xScale * this.domainMaximum)
-        .y2(this.scaledYFunction)
-        .stroke(this.tickStrokeValue)
-        .strokeWidth(this.tickStrokeWidthValue);
+      if (!this.rowLines) {
+        this.rowLines = new Lines(this.svg, m => m.id)
+          .x1(this.xScale * this.domainMinimum)
+          .y1(this.scaledYFunction)
+          .x2(this.xScale * this.domainMaximum)
+          .y2(this.scaledYFunction)
+          .stroke(this.tickStrokeValue)
+          .strokeWidth(this.tickStrokeWidthValue);
+      }
     }
 
     const binWidth = this.radiusProducer({}) * 2;
@@ -139,8 +146,8 @@ export class SinaPlot extends Plot {
       binDepths[categoryInstance][binIndex] = currentIndex + 1;
     });
 
-    this.labels.update(this.categoryLabels);
-    this.rowLines.update(this.categoryLabels);
-    this.circles.update(data);
+    this.labels && this.labels.update(this.categoryLabels);
+    this.rowLines && this.rowLines.update(this.categoryLabels);
+    this.circles && this.circles.update(data);
   }
 }
