@@ -15,6 +15,9 @@ import { LabeledValueProducer } from '../../../../../svg-bindings/project/src/li
 export abstract class Plot {
   private readonly parent: Element;
   private readonly intermediate: Element;
+  private plotLabel: Element | undefined;
+  private xAxisLabelElement: Element | undefined;
+  private xTickLabels: Text | undefined;
 
   protected outer: SVGElement;
   protected svg: SVGElement;
@@ -372,18 +375,20 @@ export abstract class Plot {
         .update(yTickModel);
 
       // x tick labels
-      new Text(this.outer, m => m.id)
-        .x(m => this.xScale * m.xPosition)
-        .y(bottom + 0.1 * bottomMargin)
-        .alignmentBaseline('hanging')
-        .textAnchor('middle')
-        .fontSize('' + (this.adjustedFontSize - 1) + 'px')
-        .stroke('none')
-        .fill('black')
-        .bold(false)
-        .fontFamily(this.fontFamilyValue)
-        .text(m => m.xPosition)
-        .update(xTickModel);
+      if (!this.xTickLabels) {
+        this.xTickLabels = new Text(this.outer, m => m.id)
+          .x(m => this.xScale * m.xPosition)
+          .y(bottom + 0.1 * bottomMargin)
+          .alignmentBaseline('hanging')
+          .textAnchor('middle')
+          .fontSize('' + (this.adjustedFontSize - 1) + 'px')
+          .stroke('none')
+          .fill('black')
+          .bold(false)
+          .fontFamily(this.fontFamilyValue)
+          .text(m => m.xPosition);
+      }
+      this.xTickLabels.update(xTickModel);
 
       // y tick labels
       new Text(this.outer, m => m.id)
@@ -419,31 +424,44 @@ export abstract class Plot {
         'stroke-width': '' + this.axisStrokeWidthValue,
       });
 
-      const plotLabel = createSvgElement('text', this.outer, {
-        x: '' + (this.xScale * this.domainMinimum + innerWidth / 2),
-        y: '' + (this.yScale * this.rangeMaximum - topMargin / 2),
-        'alignment-baseline': 'middle',
-        'text-anchor': 'middle',
-        stroke: 'none',
-        fill: 'black',
-        'font-size': '' + this.adjustedFontSize + 'px',
-        'font-family': this.fontFamilyValue,
-        'font-weight': 'bold',
-      });
-      plotLabel.innerHTML = this.plotTitleValue;
+      if (!this.plotLabel) {
+        this.plotLabel = createSvgElement('text', this.outer, {
+          'alignment-baseline': 'middle',
+          'text-anchor': 'middle',
+          stroke: 'none',
+          fill: 'black',
+          'font-weight': 'bold',
+        });
+      }
+      this.plotLabel.innerHTML = this.plotTitleValue;
+      this.plotLabel.setAttribute(
+        'x',
+        '' + (this.xScale * this.domainMinimum + innerWidth / 2)
+      );
+      this.plotLabel.setAttribute(
+        'y',
+        '' + (this.yScale * this.rangeMaximum - topMargin / 2)
+      );
+      this.plotLabel.setAttribute(
+        'font-size',
+        '' + this.adjustedFontSize + 'px'
+      );
+      this.plotLabel.setAttribute('font-family', this.fontFamilyValue);
 
-      const xAxisLabel = createSvgElement('text', this.outer, {
-        x: '' + (this.xScale * this.domainMinimum + innerWidth / 2),
-        y: '' + (bottom + 0.8 * bottomMargin),
-        'alignment-baseline': 'baseline',
-        'text-anchor': 'middle',
-        stroke: 'none',
-        fill: 'black',
-        'font-size': '' + this.adjustedFontSize + 'px',
-        'font-family': this.fontFamilyValue,
-        'font-weight': 'normal',
-      });
-      xAxisLabel.innerHTML = this.xAxisLabelValue;
+      if (!this.xAxisLabelElement) {
+        this.xAxisLabelElement = createSvgElement('text', this.outer, {
+          x: '' + (this.xScale * this.domainMinimum + innerWidth / 2),
+          y: '' + (bottom + 0.8 * bottomMargin),
+          'alignment-baseline': 'baseline',
+          'text-anchor': 'middle',
+          stroke: 'none',
+          fill: 'black',
+          'font-size': '' + this.adjustedFontSize + 'px',
+          'font-family': this.fontFamilyValue,
+          'font-weight': 'normal',
+        });
+      }
+      this.xAxisLabelElement.innerHTML = this.xAxisLabelValue;
 
       const xForYAxisLabel = +(
         this.xScale * this.domainMinimum -
