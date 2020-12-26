@@ -6,7 +6,7 @@
     "typescript",
     "eda"
   ],
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": false,
   "main": "dist/eda.js",
   "module": "dist/eda.es.js",
@@ -14,7 +14,7 @@
   "files": [
     "dist"
   ],
-  "types": "dist/eda.d.ts",
+  "types": "dist/eda/project/src/eda.d.ts",
   "license": "MIT",
   "dependencies": {
     "@types/node": "11.11.3",
