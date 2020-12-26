@@ -6,7 +6,7 @@
     "typescript",
     "eda"
   ],
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": false,
   "main": "dist/eda.js",
   "module": "dist/eda.es.js",
@@ -27,7 +27,8 @@
     "build": "rm -rf ./dist && rollup -c && tsc -p ./tsconfig-typings.json",
     "dev": "watch 'npm run build' src",
     "storybook": "start-storybook -p 6007",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "distribute": "npm run build && npm publish"
   },
   "eslintConfig": {},
   "browserslist": [
