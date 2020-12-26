@@ -6,7 +6,7 @@
     "typescript",
     "eda"
   ],
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": false,
   "main": "dist/eda.js",
   "module": "dist/eda.es.js",

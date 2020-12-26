@@ -67,11 +67,15 @@ results.smallNegativeThings = createResizableDiv(50, 100, 200, 400, 300, 600);
 results.changing = createResizableDiv(50, 100, 200, 400, 300, 600);
 
 const topDiv = document.createElement('div');
-topDiv.style.width = `400px`;
-topDiv.style.height = `200px`;
+topDiv.style.width = '100px';
+topDiv.style.height = '200px';
+topDiv.style.border = 'black 1px solid';
+
 const bottomDiv = document.createElement('div');
-bottomDiv.style.width = `400px`;
-bottomDiv.style.height = `200px`;
+bottomDiv.style.width = '600px';
+bottomDiv.style.height = '300px';
+bottomDiv.style.border = 'black 1px solid';
+
 results.stacked = document.createElement('div');
 results.stacked.appendChild(topDiv);
 results.stacked.appendChild(bottomDiv);
@@ -79,7 +83,10 @@ results.stacked.appendChild(bottomDiv);
 const topPlot = new ScatterPlot(topDiv)
   .id(d => d.id)
   .domain(4, 100)
-  .range(0, 200);
+  .range(0, 200)
+  .xAxisLabel('Time')
+  .yAxisLabel('Value')
+  .plotTitle('No Aspect Ratio');
 
 topPlot.update(data);
 topPlot.position(d => d.height, d => d.weight);
@@ -89,7 +96,11 @@ topPlot.update(data);
 const bottomPlot = new ScatterPlot(bottomDiv)
   .id(d => d.id)
   .domain(4, 100)
-  .range(0, 200);
+  .range(0, 200)
+  .xAxisLabel('Time')
+  .yAxisLabel('Value')
+  .plotTitle('Aspect Ratio of 2')
+  .aspectRatio(2);
 
 bottomPlot.update(data);
 bottomPlot.position(d => d.height, d => d.weight);
@@ -180,6 +191,7 @@ new ScatterPlot(results.smallThings)
   .position(d => d.x, d => d.y)
   .domain(0, 0.006)
   .range(1.001, 1.013)
+  .aspectRatio(2)
   .stroke('none')
   .fill('black')
   .axisStroke('none')

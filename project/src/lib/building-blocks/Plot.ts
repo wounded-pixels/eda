@@ -28,6 +28,8 @@ export abstract class Plot {
   protected rangeMinimum: number = 0;
   protected rangeMaximum: number = 100;
 
+  protected aspectRatioValue: number = -1;
+
   protected leftMargin: number = 1;
   protected adjustedFontSize: number = 10;
 
@@ -128,6 +130,12 @@ export abstract class Plot {
       );
     }
 
+    this.dirty = true;
+    return this;
+  }
+
+  aspectRatio(value: number) {
+    this.aspectRatioValue = value;
     this.dirty = true;
     return this;
   }
@@ -274,13 +282,16 @@ export abstract class Plot {
       const actualInnerHeight = this.rangeMaximum - this.rangeMinimum;
 
       const innerWidth = 100;
-      const innerHeight = Math.max(
-        innerWidth / 2,
-        Math.min(
-          innerWidth * 2,
-          (innerWidth * actualInnerHeight) / actualInnerWidth
-        )
-      );
+      const innerHeight =
+        this.aspectRatioValue > 0
+          ? innerWidth / this.aspectRatioValue
+          : Math.max(
+              innerWidth / 2,
+              Math.min(
+                innerWidth * 2,
+                (innerWidth * actualInnerHeight) / actualInnerWidth
+              )
+            );
       this.xScale = innerWidth / actualInnerWidth;
       this.yScale = (-1 * innerHeight) / actualInnerHeight;
 
