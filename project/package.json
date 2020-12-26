@@ -6,7 +6,7 @@
     "typescript",
     "eda"
   ],
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": false,
   "main": "dist/eda.js",
   "module": "dist/eda.es.js",
@@ -24,7 +24,7 @@
   "scripts": {
     "test": "jest --watch ./src/lib",
     "coverage": "jest --coverage --watch  ./src/lib",
-    "build": "rollup -c && tsc -p ./tsconfig-typings.json",
+    "build": "rm -rf ./dist && rollup -c && tsc -p ./tsconfig-typings.json",
     "dev": "watch 'npm run build' src",
     "storybook": "start-storybook -p 6007",
     "build-storybook": "build-storybook"
